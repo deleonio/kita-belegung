@@ -15,6 +15,8 @@ function getCacheHash(kinder) {
 module.exports = KINDER => {
   const moment = require("moment");
   const hash = getCacheHash(KINDER);
+  const performance = require("perf_hooks").performance;
+  const start = performance.now();
   // console.log(hash);
 
   if (CACHE.hasOwnProperty(hash) || CACHE[hash] === null) {
@@ -76,11 +78,6 @@ module.exports = KINDER => {
     }
   });
 
-  CACHE[hash] = {
-    auslastung: summieren(ZUSAGEN, "Zusagen"),
-    nachfrag: summieren(COUNTER, "Nachfrage"),
-    kinder: JSON.parse(JSON.stringify(KINDER)),
-  };
-
-  return CACHE[hash];
+  console.log(performance.now() - start, 'ms');
+  return ZUSAGEN;
 };

@@ -1,14 +1,25 @@
 const KINDER = require("./kinder.json");
+const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
+  return kind.zusage === true;
+});
+const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
+  return kind.zusage !== true;
+});
+
 const calculator = require("./calculator");
 const render = require("./render");
 const moment = require("moment");
 const fs = require("fs");
 const chalk = require("chalk");
 
-function filterKinderOhneZusage() {
-  return KINDER.filter(kind => {
-    return kind.zusage !== true;
+function summieren(jahre) {
+  let summe = 0;
+  jahre.forEach(monate => {
+    monate.forEach(monat => {
+      summe += monat;
+    });
   });
+  return summe;
 }
 
 KINDER.forEach(kind => {
@@ -18,9 +29,6 @@ KINDER.forEach(kind => {
   }
   kind.einschulung = einschulung.year();
 });
-
-const KINDER_OHNE_ZUSAGE = filterKinderOhneZusage();
-// KINDER_OHNE_ZUSAGE.splice(10);
 
 let resultKeys = [];
 let resultValues = [];
@@ -78,7 +86,12 @@ function chellangeKinder(index) {
   KINDER_OHNE_ZUSAGE[index].willZusage = false;
 }
 
-chellangeKinder(0);
+// chellangeKinder(0);
+
+// let zusagen = calculator(KINDER);
+console.log(summieren(calculator(KINDER)));
+console.log(summieren(calculator(KINDER_MIT_ZUSAGE)));
+console.log(summieren(calculator(KINDER_OHNE_ZUSAGE)));
 // resultCollector(calculator(KINDER));
 
 // for (let i = 0; i < KINDER_OHNE_ZUSAGE.length; i++) {
@@ -90,13 +103,9 @@ chellangeKinder(0);
 //   KINDER_OHNE_ZUSAGE[i].willZusage = false;
 // }
 
-resultKeys.sort().reverse();
-fs.writeFileSync(`../results/${moment.now()}-30.json`, resultKeys);
-for (let i = 0; i < resultKeys.length; i++) {
-  console.log("-----------------------------------");
-  console.log(resultKeys[i]);
-  resultValues[resultKeys[i]].forEach(result => {
-    render(result);
-  });
-  console.log("-----------------------------------");
-}
+// resultKeys.sort().reverse();
+// fs.writeFileSync(`../results/${moment.now()}-30.json`, resultValues);
+// console.log(resultKeys[0]);
+// resultValues[resultKeys[0]].forEach(result => {
+//   render(result);
+// });
