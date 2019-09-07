@@ -1,4 +1,4 @@
-module.exports = (KINDER, zusagen) => {
+module.exports = (kinder, zusagen) => {
   const performance = require("perf_hooks").performance;
   const moment = require("moment");
   const laufzeit = 6;
@@ -17,29 +17,28 @@ module.exports = (KINDER, zusagen) => {
 
   function inKita(kind, stichtag) {
     return (
-      moment(kind.geburtsdatum, "DD-MM-YYYY").add(30, "month") <=
-        moment(stichtag, "DD-MM-YYYY") &&
-      moment(`01.08.${kind.einschulung}`, "DD-MM-YYYY") >
-        moment(stichtag, "DD-MM-YYYY")
+      moment(kind.geburtsdatum, "DD-MM-YYYY").add(30, "month") <= stichtag &&
+      moment(`01.08.${kind.einschulung}`, "DD-MM-YYYY") > stichtag
     );
   }
 
-  KINDER.forEach(kind => {
-    for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
-      for (let monat = 1; monat <= 12; monat++) {
-        if (inKita(kind, moment([jahr, monat - 1, 1]))) {
+  let sticktag;
+  for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
+    for (let monat = 1; monat <= 12; monat++) {
+      sticktag = moment([jahr, monat - 1, 1]);
+      kinder.forEach(kind => {
+        if (inKita(kind, sticktag)) {
           if (kind.zusage === true || kind.willZusage === true) {
             zusagen[jahr][monat]++;
-          }
-          if (zusagen[jahr][monat] > 29) {
-            return null;
-            // throw new Error('FAULT!');
+            if (zusagen[jahr][monat] > 29) {
+              throw new Error("SKIP!");
+            }
           }
         }
-      }
+      });
     }
-  });
+  }
 
-  console.log(performance.now() - start, 'ms');
+  console.log(performance.now() - start, "ms");
   return zusagen;
 };
