@@ -3,10 +3,12 @@ module.exports = KINDER => {
   const chalk = require("chalk");
   const fs = require("fs");
 
-  
-
-  function inKita(kind, stichtag) {
-    return kind.kitaaufnahme <= stichtag && kind.einschulung > stichtag;
+  function inKita(kind, stichtag, auslastung) {
+    return (
+      (kind.kitaaufnahme <= stichtag ||
+        (kind.kitaaufnahme234 <= stichtag && auslastung < 29)) &&
+      kind.einschulung > stichtag
+    );
   }
 
   function outline(zahlen, bezeichnung) {
@@ -61,19 +63,12 @@ module.exports = KINDER => {
     let outline = "\n|";
     for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
       for (let monat = 1; monat <= 12; monat++) {
-        if (inKita(kind, moment([jahr, monat - 1, 1]))) {
+        if (inKita(kind, moment([jahr, monat - 1, 1]), ZUSAGEN[jahr][monat])) {
           COUNTER[jahr][monat]++;
           if (kind.zusage === true || kind.willZusage === true) {
             ZUSAGEN[jahr][monat]++;
           }
-          if (ZUSAGEN[jahr][monat] > 29) {
-            return { auslastung: null };
-            outline += chalk.red("##");
-          } else if (ZUSAGEN[jahr][monat] > 24) {
-            outline += chalk.yellow("##");
-          } else {
-            outline += "##";
-          }
+          outline += "##";
         } else {
           outline += "  ";
         }
@@ -94,5 +89,5 @@ module.exports = KINDER => {
 
   outline(ZUSAGEN, "Zusagen");
   outline(COUNTER, "Nachfrage");
-  console.log(OUTLINT)
+  console.log(OUTLINT);
 };

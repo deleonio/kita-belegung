@@ -1,20 +1,18 @@
 const performance = require("perf_hooks").performance;
 const start = performance.now();
-const KINDER = require("./kinder.json");
+let KINDER = require("./kinder.json");
+const prepare = require("./prepare");
 const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage === true;
 });
 const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true;
 });
-// KINDER_OHNE_ZUSAGE.splice(10);
-const AUSLASTUNG_BEI_ZUSAGE = [];
 
 const calculator = require("./calculator");
 const render = require("./render.new");
 const moment = require("moment");
 const fs = require("fs");
-const chalk = require("chalk");
 
 process.on("exit", () => {
   console.log(`${numberFormat.format(performance.now() - start)} ms`);
@@ -45,22 +43,7 @@ function summieren(zusagen) {
   return summe;
 }
 
-function prepareMoment(kinder) {
-  kinder.forEach(kind => {
-    let kitaaufnahme = moment(kind.geburtsdatum, "DD-MM-YYYY").add(3, "years");
-    if (kitaaufnahme.month() > 6) {
-      kitaaufnahme.add(1, "year");
-    }
-    // kind.kitaaufnahme = moment(kind.geburtsdatum, "DD-MM-YYYY").add(30, "month");
-    kind.kitaaufnahme = moment(`01.08.${kitaaufnahme.year()}`, "DD-MM-YYYY");
-    let einschulung = moment(kind.geburtsdatum, "DD-MM-YYYY").add(6, "years");
-    if (einschulung.month() > 6) {
-      einschulung.add(1, "year");
-    }
-    kind.einschulung = moment(`01.08.${einschulung.year()}`, "DD-MM-YYYY");
-  });
-}
-prepareMoment(KINDER);
+KINDER = prepare(KINDER);
 
 let maxAuslastung = 0;
 let resultKeys = [];
@@ -69,13 +52,14 @@ function resultCollector(kinder, auslastung) {
   const gesamtAuslastung = summieren(auslastung);
   if (maxAuslastung <= gesamtAuslastung) {
     if (maxAuslastung < gesamtAuslastung) {
+      resultValues = {};
+      resultValues[gesamtAuslastung] = [];
       outlineSelection(KINDER_OHNE_ZUSAGE, gesamtAuslastung);
     }
     maxAuslastung = gesamtAuslastung;
     if (resultKeys.indexOf(gesamtAuslastung) === -1) {
       resultKeys.push(gesamtAuslastung);
     }
-    resultValues[gesamtAuslastung] = resultValues[gesamtAuslastung] || [];
     resultValues[gesamtAuslastung].push(JSON.stringify(kinder));
   }
 }
@@ -205,4 +189,4 @@ KINDER_OHNE_ZUSAGE.forEach((kind, index) => {
 });
 
 challengeKinder(0);
-// render(KINDER);
+render(KINDER);
