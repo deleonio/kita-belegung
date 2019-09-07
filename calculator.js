@@ -24,16 +24,6 @@ module.exports = (KINDER, zusagen) => {
     );
   }
 
-  function summieren(zahlen, bezeichnung) {
-    let summe = 0;
-    for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
-      for (let monat = 1; monat <= 12; monat++) {
-        summe += zahlen[jahr][monat];
-      }
-    }
-    return summe;
-  }
-
   KINDER.forEach(kind => {
     for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
       for (let monat = 1; monat <= 12; monat++) {
