@@ -1,29 +1,7 @@
-const CACHE = {};
-
-function getCacheHash(kinder) {
-  let hash = "";
-  kinder.forEach(kind => {
-    if (kind.zusage === true || kind.willZusage === true) {
-      hash += "+";
-    } else {
-      hash += "-";
-    }
-  });
-  return hash;
-}
-
 module.exports = KINDER => {
   const moment = require("moment");
-  const hash = getCacheHash(KINDER);
   const performance = require("perf_hooks").performance;
   const start = performance.now();
-  // console.log(hash);
-
-  if (CACHE.hasOwnProperty(hash) || CACHE[hash] === null) {
-    throw new Error("BREAK!");
-  } else {
-    CACHE[hash] = null;
-  }
 
   function inKita(kind, stichtag) {
     return (
