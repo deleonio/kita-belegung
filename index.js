@@ -27,7 +27,8 @@ KINDER.forEach(kind => {
   if (einschulung.month() > 6) {
     einschulung.add(1, "year");
   }
-  kind.einschulung = einschulung.year();
+  kind.einschulung = moment(`01.08.${einschulung.year()}`, "DD-MM-YYYY");
+  kind.kitaaufnahme = moment(kind.geburtsdatum, "DD-MM-YYYY").add(30, "month");
 });
 
 let resultKeys = [];

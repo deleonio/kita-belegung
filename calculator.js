@@ -17,8 +17,8 @@ module.exports = (kinder, zusagen) => {
 
   function inKita(kind, stichtag) {
     return (
-      moment(kind.geburtsdatum, "DD-MM-YYYY").add(30, "month") <= stichtag &&
-      moment(`01.08.${kind.einschulung}`, "DD-MM-YYYY") > stichtag
+      kind.kitaaufnahme <= stichtag &&
+      kind.einschulung > stichtag
     );
   }
 
