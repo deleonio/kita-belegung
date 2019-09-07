@@ -1,7 +1,19 @@
-module.exports = KINDER => {
-  const moment = require("moment");
+module.exports = (KINDER, zusagen) => {
   const performance = require("perf_hooks").performance;
+  const moment = require("moment");
+  const laufzeit = 6;
+  const heute = moment();
   const start = performance.now();
+
+  if (Array.isArray(zusagen) === false) {
+    zusagen = [];
+    for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
+      zusagen[jahr] = [];
+      for (let monat = 1; monat <= 12; monat++) {
+        zusagen[jahr][monat] = 0;
+      }
+    }
+  }
 
   function inKita(kind, stichtag) {
     return (
@@ -14,7 +26,7 @@ module.exports = KINDER => {
 
   function summieren(zahlen, bezeichnung) {
     let summe = 0;
-    for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
+    for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
       for (let monat = 1; monat <= 12; monat++) {
         summe += zahlen[jahr][monat];
       }
@@ -22,32 +34,14 @@ module.exports = KINDER => {
     return summe;
   }
 
-  const LAUFZEIT = 6;
-  const COUNTER = [];
-  const ZUSAGEN = [];
-
-  heute = moment();
-  for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
-    COUNTER[jahr] = [];
-    ZUSAGEN[jahr] = [];
-  }
-  for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
-    for (let monat = 1; monat <= 12; monat++) {
-      COUNTER[jahr][monat] = 0;
-      ZUSAGEN[jahr][monat] = 0;
-      if (monat < 10) {
-      }
-    }
-  }
   KINDER.forEach(kind => {
-    for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
+    for (let jahr = heute.year(); jahr < heute.year() + laufzeit; jahr++) {
       for (let monat = 1; monat <= 12; monat++) {
         if (inKita(kind, moment([jahr, monat - 1, 1]))) {
-          COUNTER[jahr][monat]++;
           if (kind.zusage === true || kind.willZusage === true) {
-            ZUSAGEN[jahr][monat]++;
+            zusagen[jahr][monat]++;
           }
-          if (ZUSAGEN[jahr][monat] > 29) {
+          if (zusagen[jahr][monat] > 29) {
             return null;
             // throw new Error('FAULT!');
           }
@@ -57,5 +51,5 @@ module.exports = KINDER => {
   });
 
   console.log(performance.now() - start, 'ms');
-  return ZUSAGEN;
+  return zusagen;
 };
