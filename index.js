@@ -7,7 +7,7 @@ const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
 const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true;
 });
-// KINDER_OHNE_ZUSAGE.splice(14);
+// KINDER_OHNE_ZUSAGE.splice(10);
 const AUSLASTUNG_BEI_ZUSAGE = [];
 
 const calculator = require("./calculator");
@@ -19,7 +19,10 @@ const chalk = require("chalk");
 process.on("exit", () => {
   console.log(`${numberFormat.format(performance.now() - start)} ms`);
   resultKeys.sort().reverse();
-  fs.writeFileSync(`../results/${moment.now()}-30.json`, resultValues);
+  fs.writeFileSync(
+    `../results/${moment.now()}.json`,
+    JSON.stringify(resultValues)
+  );
   console.log(resultKeys[0]);
   resultValues[resultKeys[0]].forEach(result => {
     let kinder = JSON.parse(result);
@@ -65,14 +68,24 @@ let resultValues = {};
 function resultCollector(kinder, auslastung) {
   const gesamtAuslastung = summieren(auslastung);
   if (maxAuslastung <= gesamtAuslastung) {
+    if (maxAuslastung < gesamtAuslastung) {
+      outlineSelection(KINDER_OHNE_ZUSAGE, gesamtAuslastung);
+    }
     maxAuslastung = gesamtAuslastung;
     if (resultKeys.indexOf(gesamtAuslastung) === -1) {
       resultKeys.push(gesamtAuslastung);
     }
     resultValues[gesamtAuslastung] = resultValues[gesamtAuslastung] || [];
     resultValues[gesamtAuslastung].push(JSON.stringify(kinder));
-    outlineSelection(KINDER_OHNE_ZUSAGE, gesamtAuslastung);
   }
+}
+
+function getInSekunden() {
+  return (performance.now() - start) / 1000;
+}
+
+function getInMinuten() {
+  return getInSekunden() / 60;
 }
 
 function outlineSelection(kinder, auslastung) {
@@ -84,7 +97,13 @@ function outlineSelection(kinder, auslastung) {
       outline += "-";
     }
   });
-  console.log(outline + " | " + auslastung);
+  console.log(
+    outline +
+      " | " +
+      auslastung +
+      " | " +
+      `${numberFormat.format(getInSekunden())} s`
+  );
 }
 
 function testConstelation(basisAuslastung, kinderWillZusage) {
@@ -109,6 +128,7 @@ function testConstelation(basisAuslastung, kinderWillZusage) {
 }
 
 function challengeKinder(index) {
+  KINDER_OHNE_ZUSAGE[index].willZusage = false;
   if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
     challengeKinder(index + 1);
   } else {
