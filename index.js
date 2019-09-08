@@ -9,6 +9,9 @@ const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true && kind.absage !== true;
 });
 
+const MODUS = '36';
+console.log('MODUS', MODUS);
+
 const calculator = require("./calculator");
 const render = require("./render.new");
 const moment = require("moment");
@@ -18,7 +21,7 @@ process.on("exit", () => {
   console.log(`${numberFormat.format(performance.now() - start)} ms`);
   resultKeys.sort().reverse();
   fs.writeFileSync(
-    `../results/${moment.now()}.json`,
+    `../results/${moment.now()}.${MODUS}.json`,
     JSON.stringify(resultValues)
   );
   console.log(resultKeys[0]);
@@ -143,33 +146,8 @@ function challengeKinder(index) {
   KINDER_OHNE_ZUSAGE[index].willZusage = false;
 }
 
-// let zusagen = calculator(KINDER);
-// resultCollector(calculator(KINDER));
-
-// for (let i = 0; i < KINDER_OHNE_ZUSAGE.length; i++) {
-//   resultCollector(calculator(KINDER));
-//   outlineSelection(KINDER_OHNE_ZUSAGE);
-//   for (let j = i; j < KINDER_OHNE_ZUSAGE.length; j++) {
-//     challengeKinder(j);
-//   }
-//   KINDER_OHNE_ZUSAGE[i].willZusage = false;
-// }
-
-// resultKeys.sort().reverse();
-// fs.writeFileSync(`../results/${moment.now()}-30.json`, resultValues);
-// console.log(resultKeys[0]);
-// resultValues[resultKeys[0]].forEach(result => {
-//   render(result);
-// });
-
-/// #####################################################################################
-
 const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
-const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE);
-
-console.log(summieren(calculator(KINDER)));
-console.log(summieren(calculator(KINDER_MIT_ZUSAGE)));
-console.log(summieren(calculator(KINDER_OHNE_ZUSAGE)));
+const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE, MODUS);
 
 console.log("KINDER:", KINDER.length);
 console.log("KINDER_MIT_ZUSAGE:", KINDER_MIT_ZUSAGE.length);
@@ -182,9 +160,7 @@ console.log(
 );
 KINDER_OHNE_ZUSAGE.forEach((kind, index) => {
   kind.willZusage = true;
-  kind.auslastung = calculator([kind]);
-  // console.log(summieren(kind.auslastung));
-  // calculator([]);
+  kind.auslastung = calculator([kind], MODUS);
   kind.willZusage = false;
 });
 

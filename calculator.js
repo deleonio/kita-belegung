@@ -1,4 +1,4 @@
-module.exports = (kinder, zusagen) => {
+module.exports = (kinder, MODUS, zusagen) => {
   const performance = require("perf_hooks").performance;
   const moment = require("moment");
   const laufzeit = 6;
@@ -16,7 +16,12 @@ module.exports = (kinder, zusagen) => {
   }
 
   function inKita(kind, stichtag) {
-    return kind.kitaaufnahme <= stichtag && kind.einschulung > stichtag;
+    return (
+      ((MODUS === "36" && kind.kitaaufnahme3 <= stichtag) ||
+        (MODUS === "33" && kind.kitaaufnahme234 <= stichtag) ||
+        (MODUS === "-" && kind.kitaaufnahme <= stichtag)) &&
+      kind.einschulung > stichtag
+    );
   }
 
   let sticktag;
@@ -24,7 +29,7 @@ module.exports = (kinder, zusagen) => {
     if (zusagen.hasOwnProperty(jahr)) {
       for (let monat in zusagen[jahr]) {
         if (zusagen[jahr].hasOwnProperty(monat)) {
-          sticktag = moment([jahr, monat -1, 1]);
+          sticktag = moment([jahr, monat - 1, 1]);
           kinder.forEach(kind => {
             if (inKita(kind, sticktag)) {
               if (kind.zusage === true || kind.willZusage === true) {
