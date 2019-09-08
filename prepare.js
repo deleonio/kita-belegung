@@ -8,7 +8,7 @@ module.exports = kinder => {
       kitaaufnahme.add(1, "year");
     }
     kind.kitaaufnahme234 = moment(kind.geburtsdatum, "DD-MM-YYYY").add(
-      30,
+      33,
       "month"
     );
     kind.kitaaufnahme3 = moment(kind.geburtsdatum, "DD-MM-YYYY").add(

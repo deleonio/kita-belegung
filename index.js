@@ -18,7 +18,7 @@ process.on("exit", () => {
   console.log(`${numberFormat.format(performance.now() - start)} ms`);
   resultKeys.sort().reverse();
   fs.writeFileSync(
-    `../results/${moment.now()}.json`,
+    `../results/${moment.now()}.36.json`,
     JSON.stringify(resultValues)
   );
   console.log(resultKeys[0]);

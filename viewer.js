@@ -2,9 +2,12 @@ const performance = require("perf_hooks").performance;
 const start = performance.now();
 const render = require("./render.new");
 const prepare = require("./prepare");
+const calculator = require("./calculator.extended");
 const util = require("util");
 const fs = require("fs");
-let result = fs.readFileSync("../results/1567854604219.-.json", "UTF-8");
+// let result = fs.readFileSync("../results/1567874497451.33.json", "UTF-8");
+// let result = fs.readFileSync("../results/1567875137817.36.json", "UTF-8");
+let result = fs.readFileSync("../results/1567873165082.json", "UTF-8");
 // result = result.replace(/\[object Object\]/g, 'null');
 
 const readline = require("readline");
@@ -21,10 +24,10 @@ process.stdin.on("keypress", (str, key) => {
       kinder = prepare(kinder);
       console.log(
         kinder.filter(kind => {
-          return kind.vorname === "Julian" || kind.vorname === "Luise";
+          return kind.vorname === "Julian" || kind.vorname === "Luise" || kind.nachname === "Reuter";
         })
       );
-      render(kinder);
+      render(kinder, true);
       outlineSelection(kinder);
       index++;
     }
@@ -63,14 +66,35 @@ function outlineSelection(kinder) {
   console.log(outline + " | " + counter);
 }
 
+function summieren(zusagen) {
+  let summe = 0;
+  for (let jahr in zusagen) {
+    if (zusagen.hasOwnProperty(jahr)) {
+      for (let monat in zusagen[jahr]) {
+        if (zusagen[jahr].hasOwnProperty(monat)) {
+          summe += zusagen[jahr][monat];
+        }
+      }
+    }
+  }
+  return summe;
+}
+
 console.log(
   "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
   result[maxAuslastung].length
 );
-result[maxAuslastung].forEach(kinder => {
+result[maxAuslastung].forEach((kinder, index) => {
   kinder = JSON.parse(kinder);
+
+  let zusagen = render(kinder, false);
+  // console.log(zusagen);
+  // console.log(index, zusagen, summieren(zusagen));
+
   // console.log(typeof kinder);
   // console.log(util.inspect(kinder, true, null, true));
-  // render(kinder);
+  // render(kinder, true);
 });
 // console.log(result[maxAuslastung].length);
+
+ 

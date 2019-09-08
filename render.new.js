@@ -1,12 +1,30 @@
-module.exports = KINDER => {
+module.exports = (KINDER, show) => {
   const moment = require("moment");
   const chalk = require("chalk");
   const fs = require("fs");
 
-  function inKita(kind, stichtag, auslastung) {
+  show = show === true;
+
+  function inKitaExtended(jahr, monat) {
+    for (let i = jahr; i < heute.year() + LAUFZEIT; i++) {
+      for (let j = monat; j <= 12; j++) {
+        monat = 1;
+        if (ZUSAGEN[i][j] >= 29) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  function inKita(kind, jahr, monat) {
+    let stichtag = moment([jahr, monat - 1, 1]);
+    let auslastung = ZUSAGEN[jahr][monat];
     return (
       (kind.kitaaufnahme <= stichtag ||
-        (kind.kitaaufnahme234 <= stichtag && auslastung < 29)) &&
+        (kind.kitaaufnahme234 <= stichtag &&
+          auslastung < 29 &&
+          inKitaExtended(jahr, monat))) &&
       kind.einschulung > stichtag
     );
   }
@@ -63,7 +81,7 @@ module.exports = KINDER => {
     let outline = "\n|";
     for (let jahr = heute.year(); jahr < heute.year() + LAUFZEIT; jahr++) {
       for (let monat = 1; monat <= 12; monat++) {
-        if (inKita(kind, moment([jahr, monat - 1, 1]), ZUSAGEN[jahr][monat])) {
+        if (inKita(kind, jahr, monat)) {
           COUNTER[jahr][monat]++;
           if (kind.zusage === true || kind.willZusage === true) {
             ZUSAGEN[jahr][monat]++;
@@ -89,5 +107,8 @@ module.exports = KINDER => {
 
   outline(ZUSAGEN, "Zusagen");
   outline(COUNTER, "Nachfrage");
-  console.log(OUTLINT);
+  if (show === true) {
+    console.log(OUTLINT);
+  }
+  return ZUSAGEN;
 };

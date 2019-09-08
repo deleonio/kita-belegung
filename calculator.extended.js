@@ -14,9 +14,29 @@ module.exports = (kinder, zusagen) => {
       }
     }
   }
+        
+  function inKitaExtended(jahr, monat) {
+    for (let i = jahr; i < heute.year() + LAUFZEIT; i++) {
+      for (let j = monat; j <= 12; j++) {
+        monat = 1;
+        if (zusagen[i][j] >= 29) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
-  function inKita(kind, stichtag) {
-    return kind.kitaaufnahme3 <= stichtag && kind.einschulung > stichtag;
+  function inKita(kind, jahr, monat) {
+    let stichtag = moment([jahr, monat - 1, 1]);
+    let auslastung = zusagen[jahr][monat];
+    return (
+      (kind.kitaaufnahme <= stichtag ||
+        (kind.kitaaufnahme234 <= stichtag &&
+          auslastung < 29 &&
+          inKitaExtended(jahr, monat))) &&
+      kind.einschulung > stichtag
+    );
   }
 
   let sticktag;
