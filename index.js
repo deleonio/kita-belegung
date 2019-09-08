@@ -5,6 +5,9 @@ const prepare = require("./prepare");
 const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage === true && kind.absage !== true;
 });
+const KINDER_MIT_ABSAGE = KINDER.filter(kind => {
+  return kind.absage === true;
+});
 const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true && kind.absage !== true;
 });
@@ -151,6 +154,7 @@ const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE, MODUS);
 
 console.log("KINDER:", KINDER.length);
 console.log("KINDER_MIT_ZUSAGE:", KINDER_MIT_ZUSAGE.length);
+console.log("KINDER_MIT_ABSAGE:", KINDER_MIT_ABSAGE.length);
 console.log(
   "KINDER_OHNE_ZUSAGE:",
   KINDER_OHNE_ZUSAGE.length,
@@ -158,6 +162,7 @@ console.log(
     Math.pow(2, KINDER_OHNE_ZUSAGE.length)
   )} Kombinationen)`
 );
+
 KINDER_OHNE_ZUSAGE.forEach((kind, index) => {
   kind.willZusage = true;
   kind.auslastung = calculator([kind], MODUS);
