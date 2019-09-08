@@ -183,8 +183,8 @@ console.log(
 KINDER_OHNE_ZUSAGE.forEach((kind, index) => {
   kind.willZusage = true;
   kind.auslastung = calculator([kind]);
-  console.log(summieren(kind.auslastung));
-  calculator([]);
+  // console.log(summieren(kind.auslastung));
+  // calculator([]);
   kind.willZusage = false;
 });
 

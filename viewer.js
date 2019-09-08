@@ -13,31 +13,7 @@ let result = fs.readFileSync("../results/1567873165082.json", "UTF-8");
 const readline = require("readline");
 let index = 0;
 
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
-process.stdin.on("keypress", (str, key) => {
-  if (key.ctrl && key.name === "c") {
-    process.exit();
-  } else if (key.name === "n") {
-    if (index < result[maxAuslastung].length) {
-      let kinder = JSON.parse(result[maxAuslastung][index]);
-      kinder = prepare(kinder);
-      render(kinder, true);
-      outlineSelection(kinder);
-      index++;
-    }
-  }
-  console.log(`You pressed the "${str}" key`);
-  console.log();
-  console.log(key);
-  console.log();
-});
-console.log("Press any key...");
-
-console.log(typeof result);
 result = JSON.parse(result);
-console.log(typeof result);
-console.log(Array.isArray(result));
 let maxAuslastung = 0;
 for (let auslastung in result) {
   if (result.hasOwnProperty(auslastung)) {
@@ -100,7 +76,7 @@ result[maxAuslastung].forEach((kinder, index) => {
       theMaxBelegung = [];
     }
     theMaxAuslastung = auslastung;
-    console.log(index, theMaxAuslastung);
+    // console.log(index, theMaxAuslastung);
     theMaxBelegung.push(kinder);
   }
   // console.log(zusagen);
@@ -117,8 +93,28 @@ console.log(
   "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
   theMaxBelegung.length
 );
-console.log(
-  "Berechnungsdauer:",
-  getInSekunden() + ' s'
-);
+console.log("Berechnungsdauer:", getInSekunden() + " s");
 
+readline.emitKeypressEvents(process.stdin);
+process.stdin.setRawMode(true);
+process.stdin.on("keypress", (str, key) => {
+  if (key.ctrl && key.name === "c") {
+    process.exit();
+  } else if (key.name === "n") {
+    if (index < theMaxBelegung.length) {
+      render(theMaxBelegung[index], true);
+      outlineSelection(theMaxBelegung[index]);
+      if (index + 1 < theMaxBelegung.length) {
+        index++;
+      } else {
+        index = 0;
+        console.log();
+        console.log(
+          "[ENDE ... Ergebnisse werden wieder von vorne aufgelistet!]"
+        );
+        console.log();
+      }
+    }
+  }
+});
+console.log("Drücke n um Dir die Ergebnisse schrittweise anzeigen zu lassen.");
