@@ -1,6 +1,6 @@
 const performance = require("perf_hooks").performance;
 const start = performance.now();
-let KINDER = require("./kinder.json");
+let KINDER = require("./kinder.v2.json");
 const prepare = require("./prepare");
 const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage === true && kind.absage !== false;
