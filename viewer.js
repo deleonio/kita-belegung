@@ -22,11 +22,6 @@ process.stdin.on("keypress", (str, key) => {
     if (index < result[maxAuslastung].length) {
       let kinder = JSON.parse(result[maxAuslastung][index]);
       kinder = prepare(kinder);
-      console.log(
-        kinder.filter(kind => {
-          return kind.vorname === "Julian" || kind.vorname === "Luise" || kind.nachname === "Reuter";
-        })
-      );
       render(kinder, true);
       outlineSelection(kinder);
       index++;
@@ -50,6 +45,14 @@ for (let auslastung in result) {
       maxAuslastung = auslastung;
     }
   }
+}
+
+function getInSekunden() {
+  return (performance.now() - start) / 1000;
+}
+
+function getInMinuten() {
+  return getInSekunden() / 60;
 }
 
 function outlineSelection(kinder) {
@@ -84,17 +87,38 @@ console.log(
   "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
   result[maxAuslastung].length
 );
+let theMaxAuslastung = 0;
+let theMaxBelegung = [];
 result[maxAuslastung].forEach((kinder, index) => {
   kinder = JSON.parse(kinder);
+  kinder = prepare(kinder);
 
   let zusagen = render(kinder, false);
+  let auslastung = summieren(zusagen);
+  if (theMaxAuslastung <= auslastung) {
+    if (theMaxAuslastung < auslastung) {
+      theMaxBelegung = [];
+    }
+    theMaxAuslastung = auslastung;
+    console.log(index, theMaxAuslastung);
+    theMaxBelegung.push(kinder);
+  }
   // console.log(zusagen);
-  // console.log(index, zusagen, summieren(zusagen));
 
   // console.log(typeof kinder);
   // console.log(util.inspect(kinder, true, null, true));
   // render(kinder, true);
 });
-// console.log(result[maxAuslastung].length);
+theMaxBelegung.forEach(kinder => {
+  render(kinder, true);
+});
+console.log();
+console.log(
+  "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
+  theMaxBelegung.length
+);
+console.log(
+  "Berechnungsdauer:",
+  getInSekunden() + ' s'
+);
 
- 

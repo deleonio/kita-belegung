@@ -16,7 +16,7 @@ module.exports = (kinder, zusagen) => {
   }
 
   function inKita(kind, stichtag) {
-    return kind.kitaaufnahme3 <= stichtag && kind.einschulung > stichtag;
+    return kind.kitaaufnahme <= stichtag && kind.einschulung > stichtag;
   }
 
   let sticktag;

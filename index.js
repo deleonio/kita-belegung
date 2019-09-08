@@ -3,10 +3,10 @@ const start = performance.now();
 let KINDER = require("./kinder.json");
 const prepare = require("./prepare");
 const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
-  return kind.zusage === true;
+  return kind.zusage === true && kind.absage !== false;
 });
 const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
-  return kind.zusage !== true;
+  return kind.zusage !== true && kind.absage !== false;
 });
 
 const calculator = require("./calculator");
@@ -18,7 +18,7 @@ process.on("exit", () => {
   console.log(`${numberFormat.format(performance.now() - start)} ms`);
   resultKeys.sort().reverse();
   fs.writeFileSync(
-    `../results/${moment.now()}.36.json`,
+    `../results/${moment.now()}.json`,
     JSON.stringify(resultValues)
   );
   console.log(resultKeys[0]);
