@@ -3,10 +3,10 @@ const start = performance.now();
 let KINDER = require("./kinder.v2.json");
 const prepare = require("./prepare");
 const KINDER_MIT_ZUSAGE = KINDER.filter(kind => {
-  return kind.zusage === true && kind.absage !== false;
+  return kind.zusage === true && kind.absage !== true;
 });
 const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
-  return kind.zusage !== true && kind.absage !== false;
+  return kind.zusage !== true && kind.absage !== true;
 });
 
 const calculator = require("./calculator");
