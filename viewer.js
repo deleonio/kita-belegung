@@ -7,7 +7,7 @@ const util = require("util");
 const fs = require("fs");
 // let result = fs.readFileSync("../results/1567874497451.33.json", "UTF-8");
 // let result = fs.readFileSync("../results/1567875137817.36.json", "UTF-8");
-let result = fs.readFileSync("../results/1568084827244.-.json", "UTF-8");
+let result = fs.readFileSync("../results/1568086246180.-.json", "UTF-8");
 
 const readline = require("readline");
 let index = 0;
@@ -59,7 +59,7 @@ function summieren(zusagen) {
 }
 
 console.log(
-  "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
+  "Anzahl möglicher Kombinationen mit maximaler Auslastung (nicht optimiert):",
   result[maxAuslastung].length
 );
 let theMaxAuslastung = 0;
@@ -78,15 +78,22 @@ result[maxAuslastung].forEach((kinder, index) => {
     theMaxBelegung.push(kinder);
   }
 });
-theMaxBelegung.forEach(kinder => {
-  render(kinder, true);
-});
-console.log();
-console.log(
-  "Anzahl möglicher Kombinationen mit maximaler Auslastung:",
-  theMaxBelegung.length
-);
-console.log("Berechnungsdauer:", getInSekunden() + " s");
+
+function renderErgebnis() {
+  if (index < theMaxBelegung.length) {
+    render(theMaxBelegung[index], true);
+    console.log(
+      "Drücke n um Dir die alternativen Ergebnisse schrittweise anzeigen zu lassen."
+    );
+    if (index + 1 < theMaxBelegung.length) {
+      index++;
+    } else {
+      index = 0;
+      console.log();
+      console.log("[ENDE ... Ergebnisse werden wieder von vorne aufgelistet!]");
+    }
+  }
+}
 
 readline.emitKeypressEvents(process.stdin);
 process.stdin.setRawMode(true);
@@ -94,19 +101,13 @@ process.stdin.on("keypress", (str, key) => {
   if (key.ctrl && key.name === "c") {
     process.exit();
   } else if (key.name === "n") {
-    if (index < theMaxBelegung.length) {
-      render(theMaxBelegung[index], true);
-      if (index + 1 < theMaxBelegung.length) {
-        index++;
-      } else {
-        index = 0;
-        console.log();
-        console.log(
-          "[ENDE ... Ergebnisse werden wieder von vorne aufgelistet!]"
-        );
-        console.log();
-      }
-    }
+    renderErgebnis();
   }
 });
-console.log("Drücke n um Dir die Ergebnisse schrittweise anzeigen zu lassen.");
+
+console.log("Berechnungsdauer:", getInSekunden() + " s");
+console.log(
+  "Anzahl möglicher Kombinationen mit maximaler Auslastung (optimiert):",
+  theMaxBelegung.length
+);
+renderErgebnis();

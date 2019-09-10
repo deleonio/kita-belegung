@@ -29,6 +29,14 @@ module.exports = (KINDER, show) => {
     );
   }
 
+  function fruehstensInKita(kind, jahr, monat) {
+    let stichtag = moment([jahr, monat - 1, 1]);
+    return (
+      kind.kitaaufnahme234 <= stichtag &&
+      kind.einschulung > stichtag
+    );
+  }
+
   function outline(zahlen, bezeichnung) {
     let summe = 0;
     OUTLINT += "\n|";
@@ -55,7 +63,7 @@ module.exports = (KINDER, show) => {
   const LAUFZEIT = 6;
   const COUNTER = [];
   const ZUSAGEN = [];
-  let OUTLINT = "\n\n";
+  let OUTLINT = "\n";
 
   const START = moment().year();
   OUTLINT += "\n|";
@@ -87,6 +95,8 @@ module.exports = (KINDER, show) => {
             ZUSAGEN[jahr][monat]++;
           }
           outline += "##";
+        } else if(fruehstensInKita(kind, jahr, monat)) {
+          outline += "..";
         } else {
           outline += "  ";
         }
@@ -122,7 +132,8 @@ module.exports = (KINDER, show) => {
   if (show === true) {
     console.log(OUTLINT);
     console.log()
-    console.log(`${chalk.bgCyan('Zusagen')} | ${chalk.bgRed('Absagen')} | * Geschwisterkind`)
+    console.log(`Legende: ${chalk.bgCyan('Zusagen')} | ${chalk.bgRed('Absagen')} | # potenzielle Betreuung | . potenziell frühzeitigere Betreuung | * Geschwisterkind`)
+    console.log()
   }
   return ZUSAGEN;
 };

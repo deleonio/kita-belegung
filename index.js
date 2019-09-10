@@ -12,7 +12,7 @@ const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true && kind.absage !== true;
 });
 
-const MODUS = "-";
+const MODUS = "33";
 console.log("MODUS", MODUS);
 
 const calculator = require("./calculator");
@@ -157,7 +157,13 @@ function challengeKinder(index) {
 }
 
 const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
-const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE, MODUS);
+let BASIS_AUSLASTUNG;
+try {
+  calculator(KINDER_MIT_ZUSAGE, MODUS);
+} catch(e) {
+  console.error(`FEHLER: Die Basisauslastung ist schon zu hoch!`);
+  process.exit(0);
+}
 
 console.log("KINDER:", KINDER.length);
 console.log("KINDER_MIT_ZUSAGE:", KINDER_MIT_ZUSAGE.length);
