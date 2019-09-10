@@ -7,8 +7,7 @@ const util = require("util");
 const fs = require("fs");
 // let result = fs.readFileSync("../results/1567874497451.33.json", "UTF-8");
 // let result = fs.readFileSync("../results/1567875137817.36.json", "UTF-8");
-let result = fs.readFileSync("../results/1568082665251.-.json", "UTF-8");
-// result = result.replace(/\[object Object\]/g, 'null');
+let result = fs.readFileSync("../results/1568083818658.-.json", "UTF-8");
 
 const readline = require("readline");
 let index = 0;

@@ -139,10 +139,7 @@ function challengeKinder(index) {
           KINDER,
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
-      } catch (e) {
-        // render(KINDER);
-        // throw e;
-      }
+      } catch (e) {}
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = true;
     if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
@@ -153,10 +150,7 @@ function challengeKinder(index) {
           KINDER,
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
-      } catch (e) {
-        // render(KINDER);
-        // throw e;
-      }
+      } catch (e) {}
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = false;
   }
