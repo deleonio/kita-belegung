@@ -93,14 +93,17 @@ module.exports = (KINDER, show) => {
         outline += "|";
       }
     }
-    if (kind.zusage === true) {
-      OUTLINT += chalk.green(outline + ` ${kind.vorname} ${kind.nachname}`);
+    outline = outline + ` ${kind.vorname} ${kind.nachname}`;
+    if (kind.zusage === true && kind.willZusage === true) {
+      OUTLINT += chalk.bgCyan(outline);
+    } else if (kind.zusage === true) {
+      OUTLINT += chalk.cyan(outline);
     } else if (kind.willZusage === true) {
-      OUTLINT += chalk.red(outline + ` ${kind.vorname} ${kind.nachname}`);
+      OUTLINT += chalk.bgGreen(outline);
     } else if (kind.geschwisterkind === true) {
-      OUTLINT += chalk.blue(outline + ` ${kind.vorname} ${kind.nachname}`);
+      OUTLINT += chalk.yellow(outline);
     } else {
-      OUTLINT += outline + ` ${kind.vorname} ${kind.nachname}`;
+      OUTLINT += outline;
     }
   });
   OUTLINT += "\n|\n";

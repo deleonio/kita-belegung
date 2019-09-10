@@ -21,9 +21,9 @@ module.exports = kinder => {
       einschulung.add(1, "year");
     }
     kind.einschulung = moment(`01.08.${einschulung.year()}`, "DD-MM-YYYY");
-    if (kind.zusage === true && kind.willZusage === true) {
-      kind.zusage = false;
-    }
+    // if (kind.zusage === true && kind.willZusage === true) {
+    //   kind.zusage = false;
+    // }
     kind.einschulungJahr = einschulung.year();
   });
 

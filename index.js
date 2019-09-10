@@ -12,8 +12,8 @@ const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true && kind.absage !== true;
 });
 
-const MODUS = '36';
-console.log('MODUS', MODUS);
+const MODUS = "-";
+console.log("MODUS", MODUS);
 
 const calculator = require("./calculator");
 const render = require("./render.new");
@@ -27,12 +27,6 @@ process.on("exit", () => {
     `../results/${moment.now()}.${MODUS}.json`,
     JSON.stringify(resultValues)
   );
-  console.log(resultKeys[0]);
-  resultValues[resultKeys[0]].forEach(result => {
-    let kinder = JSON.parse(result);
-    prepareMoment(kinder);
-    render(kinder);
-  });
 });
 
 function summieren(zusagen) {
@@ -78,17 +72,21 @@ function getInMinuten() {
   return getInSekunden() / 60;
 }
 
-function outlineSelection(kinder, auslastung) {
-  outline = "";
+function getHashes(kinder) {
+  hashes = "";
   kinder.forEach(kind => {
     if (kind.willZusage) {
-      outline += "#";
+      hashes += "#";
     } else {
-      outline += "-";
+      hashes += "-";
     }
   });
+  return hashes;
+}
+
+function outlineSelection(kinder, auslastung) {
   console.log(
-    outline +
+    getHashes(kinder) +
       " | " +
       auslastung +
       " | " +
@@ -96,7 +94,7 @@ function outlineSelection(kinder, auslastung) {
   );
 }
 
-function testConstelation(basisAuslastung, kinderWillZusage) {
+function testConstellation(basisAuslastung, kinderWillZusage) {
   testAuslastung = JSON.parse(JSON.stringify(basisAuslastung));
   for (let jahr in testAuslastung) {
     if (testAuslastung.hasOwnProperty(jahr)) {
@@ -106,6 +104,9 @@ function testConstelation(basisAuslastung, kinderWillZusage) {
             if (kind.zusage === true || kind.willZusage === true) {
               testAuslastung[jahr][monat] += kind.auslastung[jahr][monat];
               if (testAuslastung[jahr][monat] > 29) {
+                let hashes = getHashes(kinder);
+                hashes = hashes.replace(/^-*/, "");
+                BLACK_LIST.push(new RegExp(`${hashes}$`));
                 throw new Error("FAULT");
               }
             }
@@ -117,36 +118,48 @@ function testConstelation(basisAuslastung, kinderWillZusage) {
   return testAuslastung;
 }
 
+const BLACK_LIST = [];
+function isNotInBlackList(kinder) {
+  const hashes = getHashes(kinder);
+  return (
+    BLACK_LIST.find(blackHash => {
+      return blackHash.test(hashes);
+    }) === undefined
+  );
+}
+
 function challengeKinder(index) {
   KINDER_OHNE_ZUSAGE[index].willZusage = false;
-  if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
-    challengeKinder(index + 1);
-  } else {
-    try {
-      resultCollector(
-        KINDER,
-        testConstelation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
-      );
-    } catch (e) {
-      // render(KINDER);
-      // throw e;
+  if (isNotInBlackList(KINDER_OHNE_ZUSAGE)) {
+    if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
+      challengeKinder(index + 1);
+    } else {
+      try {
+        resultCollector(
+          KINDER,
+          testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
+        );
+      } catch (e) {
+        // render(KINDER);
+        // throw e;
+      }
     }
-  }
-  KINDER_OHNE_ZUSAGE[index].willZusage = true;
-  if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
-    challengeKinder(index + 1);
-  } else {
-    try {
-      resultCollector(
-        KINDER,
-        testConstelation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
-      );
-    } catch (e) {
-      // render(KINDER);
-      // throw e;
+    KINDER_OHNE_ZUSAGE[index].willZusage = true;
+    if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
+      challengeKinder(index + 1);
+    } else {
+      try {
+        resultCollector(
+          KINDER,
+          testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
+        );
+      } catch (e) {
+        // render(KINDER);
+        // throw e;
+      }
     }
+    KINDER_OHNE_ZUSAGE[index].willZusage = false;
   }
-  KINDER_OHNE_ZUSAGE[index].willZusage = false;
 }
 
 const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
