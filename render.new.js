@@ -93,18 +93,27 @@ module.exports = (KINDER, show) => {
         outline += "|";
       }
     }
-    outline = outline + ` ${kind.vorname} ${kind.nachname}`;
-    if (kind.zusage === true && kind.willZusage === true) {
-      OUTLINT += chalk.bgCyan(outline);
+    if (kind.willZusage === true) {
+      outline = chalk.cyan(outline);
     } else if (kind.zusage === true) {
-      OUTLINT += chalk.cyan(outline);
-    } else if (kind.willZusage === true) {
-      OUTLINT += chalk.bgGreen(outline);
-    } else if (kind.geschwisterkind === true) {
-      OUTLINT += chalk.yellow(outline);
+      outline = chalk.green(outline);
     } else {
-      OUTLINT += outline;
+      outline = chalk.red(outline);
     }
+
+    let name = `${kind.vorname} ${kind.nachname}`;
+    if (kind.geschwisterkind === true) {
+      name += "*";
+    }
+
+    if (kind.willZusage === true) {
+      name = chalk.bgCyan(name);
+    } else if (kind.zusage === true) {
+      name = chalk.green(name);
+    } else {
+      name = chalk.bgRed(name);
+    }
+    OUTLINT += `${outline} ${name}`;
   });
   OUTLINT += "\n|\n";
 
@@ -112,6 +121,8 @@ module.exports = (KINDER, show) => {
   outline(COUNTER, "Nachfrage");
   if (show === true) {
     console.log(OUTLINT);
+    console.log()
+    console.log(`${chalk.bgCyan('Zusagen')} | ${chalk.bgRed('Absagen')} | * Geschwisterkind`)
   }
   return ZUSAGEN;
 };

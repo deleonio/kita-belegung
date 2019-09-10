@@ -7,7 +7,7 @@ const util = require("util");
 const fs = require("fs");
 // let result = fs.readFileSync("../results/1567874497451.33.json", "UTF-8");
 // let result = fs.readFileSync("../results/1567875137817.36.json", "UTF-8");
-let result = fs.readFileSync("../results/1568083818658.-.json", "UTF-8");
+let result = fs.readFileSync("../results/1568084827244.-.json", "UTF-8");
 
 const readline = require("readline");
 let index = 0;
@@ -75,14 +75,8 @@ result[maxAuslastung].forEach((kinder, index) => {
       theMaxBelegung = [];
     }
     theMaxAuslastung = auslastung;
-    // console.log(index, theMaxAuslastung);
     theMaxBelegung.push(kinder);
   }
-  // console.log(zusagen);
-
-  // console.log(typeof kinder);
-  // console.log(util.inspect(kinder, true, null, true));
-  // render(kinder, true);
 });
 theMaxBelegung.forEach(kinder => {
   render(kinder, true);
@@ -102,7 +96,6 @@ process.stdin.on("keypress", (str, key) => {
   } else if (key.name === "n") {
     if (index < theMaxBelegung.length) {
       render(theMaxBelegung[index], true);
-      outlineSelection(theMaxBelegung[index]);
       if (index + 1 < theMaxBelegung.length) {
         index++;
       } else {
