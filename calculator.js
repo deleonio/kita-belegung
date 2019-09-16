@@ -32,7 +32,7 @@ module.exports = (kinder, MODUS, zusagen) => {
           sticktag = moment([jahr, monat - 1, 1]);
           kinder.forEach(kind => {
             if (inKita(kind, sticktag)) {
-              if (kind.zusage === true || kind.willZusage === true) {
+              if ((kind.zusage === true || kind.willZusage === true) && kind.absage !== true) {
                 zusagen[jahr][monat]++;
                 if (zusagen[jahr][monat] > 29) {
                   throw new Error("SKIP!");

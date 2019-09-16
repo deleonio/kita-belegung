@@ -12,7 +12,7 @@ const KINDER_OHNE_ZUSAGE = KINDER.filter(kind => {
   return kind.zusage !== true && kind.absage !== true;
 });
 
-const MODUS = "33";
+const MODUS = "-";
 console.log("MODUS", MODUS);
 
 const calculator = require("./calculator");
@@ -139,7 +139,9 @@ function challengeKinder(index) {
           KINDER,
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
-      } catch (e) {}
+      } catch (e) {
+        throw e;
+      }
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = true;
     if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
@@ -150,14 +152,15 @@ function challengeKinder(index) {
           KINDER,
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
-      } catch (e) {}
+      } catch (e) {
+        throw e;}
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = false;
   }
 }
 
 const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
-let BASIS_AUSLASTUNG;
+const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE, MODUS);
 try {
   calculator(KINDER_MIT_ZUSAGE, MODUS);
 } catch(e) {

@@ -91,7 +91,7 @@ module.exports = (KINDER, show) => {
       for (let monat = 1; monat <= 12; monat++) {
         if (inKita(kind, jahr, monat)) {
           COUNTER[jahr][monat]++;
-          if (kind.zusage === true || kind.willZusage === true) {
+          if ((kind.zusage === true || kind.willZusage === true) && kind.absage !== true) {
             ZUSAGEN[jahr][monat]++;
           }
           outline += "##";
