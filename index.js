@@ -104,7 +104,7 @@ function testConstellation(basisAuslastung, kinderWillZusage) {
             if (kind.zusage === true || kind.willZusage === true) {
               testAuslastung[jahr][monat] += kind.auslastung[jahr][monat];
               if (testAuslastung[jahr][monat] > 29) {
-                let hashes = getHashes(kinder);
+                let hashes = getHashes(kinderWillZusage);
                 hashes = hashes.replace(/^-*/, "");
                 BLACK_LIST.push(new RegExp(`${hashes}$`));
                 throw new Error("FAULT");
@@ -140,7 +140,9 @@ function challengeKinder(index) {
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
       } catch (e) {
-        throw e;
+        if (e.message !== "FAULT") {
+          throw e;
+        }
       }
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = true;
@@ -153,7 +155,10 @@ function challengeKinder(index) {
           testConstellation(BASIS_AUSLASTUNG, KINDER_OHNE_ZUSAGE)
         );
       } catch (e) {
-        throw e;}
+        if (e.message !== "FAULT") {
+          throw e;
+        }
+      }
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = false;
   }
@@ -163,7 +168,7 @@ const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
 const BASIS_AUSLASTUNG = calculator(KINDER_MIT_ZUSAGE, MODUS);
 try {
   calculator(KINDER_MIT_ZUSAGE, MODUS);
-} catch(e) {
+} catch (e) {
   console.error(`FEHLER: Die Basisauslastung ist schon zu hoch!`);
   process.exit(0);
 }

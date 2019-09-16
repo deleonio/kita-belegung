@@ -118,6 +118,9 @@ module.exports = (KINDER, show) => {
 
     if (kind.willZusage === true) {
       name = chalk.bgCyan(name);
+      if (kind.voranmeldung) {
+        name += ` (${kind.voranmeldung})`
+      }
     } else if (kind.zusage === true) {
       name = chalk.green(name);
     } else {
