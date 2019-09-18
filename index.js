@@ -90,7 +90,7 @@ function outlineSelection(kinder, auslastung) {
       " | " +
       auslastung +
       " | " +
-      `${numberFormat.format(getInSekunden())} s`
+      `${numberFormat.format(getInSekunden())} s | ${BLACK_LIST.length}`
   );
 }
 
@@ -130,7 +130,7 @@ function isNotInBlackList(kinder) {
 
 function challengeKinder(index) {
   KINDER_OHNE_ZUSAGE[index].willZusage = false;
-  if (isNotInBlackList(KINDER_OHNE_ZUSAGE)) {
+  // if (isNotInBlackList(KINDER_OHNE_ZUSAGE)) {
     if (index + 1 < KINDER_OHNE_ZUSAGE.length) {
       challengeKinder(index + 1);
     } else {
@@ -161,7 +161,7 @@ function challengeKinder(index) {
       }
     }
     KINDER_OHNE_ZUSAGE[index].willZusage = false;
-  }
+  // }
 }
 
 const numberFormat = new Intl.NumberFormat("de-DE", { style: "decimal" });
