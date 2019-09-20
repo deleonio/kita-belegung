@@ -2,12 +2,13 @@ const performance = require("perf_hooks").performance;
 const start = performance.now();
 const render = require("./render.new");
 const prepare = require("./prepare");
-const calculator = require("./calculator.extended");
 const util = require("util");
+const moment = require("moment");
 const fs = require("fs");
 // let result = fs.readFileSync("../results/1567874497451.33.json", "UTF-8");
 // let result = fs.readFileSync("../results/1567875137817.36.json", "UTF-8");
-let result = fs.readFileSync("../results/1568783233629.-.json", "UTF-8");
+// let result = fs.readFileSync("../results/1568858624243.-.json", "UTF-8");
+let result = fs.readFileSync("../results/1568943707885.final.json", "UTF-8");
 
 const readline = require("readline");
 let index = 0;
@@ -78,6 +79,22 @@ result[maxAuslastung].forEach((kinder, index) => {
     theMaxBelegung.push(kinder);
   }
 });
+
+for (let i = 1; i < theMaxBelegung.length; i++) {
+  theMaxBelegung[i].forEach((kind, index) => {
+    if (theMaxBelegung[0][index].willZusage !== kind.willZusage) {
+      theMaxBelegung[0][index].toggleZusage = true;
+    }
+  });
+}
+
+const finalBelegung = {};
+finalBelegung[theMaxAuslastung] = [JSON.stringify(theMaxBelegung[0])];
+
+// fs.writeFileSync(
+//   `../results/${moment.now()}.final.json`,
+//   JSON.stringify(finalBelegung)
+// );
 
 function renderErgebnis() {
   if (index < theMaxBelegung.length) {

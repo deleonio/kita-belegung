@@ -22,6 +22,10 @@ module.exports = kinder => {
     }
     kind.einschulung = moment(`01.08.${einschulung.year()}`, "DD-MM-YYYY");
     kind.einschulungJahr = einschulung.year();
+
+    if (kind.toggleZusage === true) {
+      kind.willZusage = true;
+    }
   });
 
   for (let n = kinder.length; n > 0; --n) {
@@ -55,5 +59,12 @@ module.exports = kinder => {
     kinderZusage.push(kind);
   });
 
-  return kinderZusage;
+  const vorstandKinder = kinderZusage.filter(kind => {
+    return kind.vorstand === true;
+  });
+  const keinVorstandKinder = kinderZusage.filter(kind => {
+    return kind.vorstand !== true;
+  });
+
+  return vorstandKinder.concat(keinVorstandKinder);
 };

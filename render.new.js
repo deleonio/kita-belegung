@@ -31,10 +31,7 @@ module.exports = (KINDER, show) => {
 
   function fruehstensInKita(kind, jahr, monat) {
     let stichtag = moment([jahr, monat - 1, 1]);
-    return (
-      kind.kitaaufnahme234 <= stichtag &&
-      kind.einschulung > stichtag
-    );
+    return kind.kitaaufnahme234 <= stichtag && kind.einschulung > stichtag;
   }
 
   function outline(zahlen, bezeichnung) {
@@ -91,11 +88,14 @@ module.exports = (KINDER, show) => {
       for (let monat = 1; monat <= 12; monat++) {
         if (inKita(kind, jahr, monat)) {
           COUNTER[jahr][monat]++;
-          if ((kind.zusage === true || kind.willZusage === true) && kind.absage !== true) {
+          if (
+            (kind.zusage === true || kind.willZusage === true) &&
+            kind.absage !== true
+          ) {
             ZUSAGEN[jahr][monat]++;
           }
           outline += "##";
-        } else if(fruehstensInKita(kind, jahr, monat)) {
+        } else if (fruehstensInKita(kind, jahr, monat)) {
           outline += "..";
         } else {
           outline += "  ";
@@ -104,7 +104,11 @@ module.exports = (KINDER, show) => {
       }
     }
     if (kind.willZusage === true) {
-      outline = chalk.cyan(outline);
+      if (kind.toggleZusage === true) {
+        outline = chalk.bgCyan(outline);
+      } else {
+        outline = chalk.cyan(outline);
+      }
     } else if (kind.zusage === true) {
       outline = chalk.green(outline);
     } else {
@@ -119,12 +123,12 @@ module.exports = (KINDER, show) => {
     if (kind.willZusage === true) {
       name = chalk.bgCyan(name);
       if (kind.voranmeldung) {
-        name += ` (${kind.voranmeldung})`
+        name += ` (${kind.voranmeldung})`;
       }
     } else if (kind.zusage === true) {
       name = chalk.green(name);
     } else {
-      name = chalk.bgRed(name);
+      name = chalk.dim(chalk.bgRed(name));
     }
     OUTLINT += `${outline} ${name}`;
   });
@@ -134,9 +138,13 @@ module.exports = (KINDER, show) => {
   outline(COUNTER, "Nachfrage");
   if (show === true) {
     console.log(OUTLINT);
-    console.log()
-    console.log(`Legende: ${chalk.bgCyan('Zusagen')} | ${chalk.bgRed('Absagen')} | # potenzielle Betreuung | . potenziell frühzeitigere Betreuung | * Geschwisterkind`)
-    console.log()
+    console.log();
+    console.log(
+      `Legende: ${chalk.bgCyan("Zusagen")} | ${chalk.bgRed(
+        "Absagen"
+      )} | # potenzielle Betreuung | . potenziell frühzeitigere Betreuung | * Geschwisterkind`
+    );
+    console.log();
   }
   return ZUSAGEN;
 };
