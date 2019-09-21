@@ -105,7 +105,7 @@ module.exports = (KINDER, show) => {
     }
     if (kind.willZusage === true) {
       if (kind.toggleZusage === true) {
-        outline = chalk.bgCyan(outline);
+        outline = chalk.bgRgb(0, 25, 50)(chalk.cyan(outline));
       } else {
         outline = chalk.cyan(outline);
       }
@@ -116,10 +116,6 @@ module.exports = (KINDER, show) => {
     }
 
     let name = `${kind.vorname} ${kind.nachname}`;
-    if (kind.geschwisterkind === true) {
-      name += "*";
-    }
-
     if (kind.willZusage === true) {
       name = chalk.bgCyan(name);
       if (kind.voranmeldung) {
@@ -130,7 +126,13 @@ module.exports = (KINDER, show) => {
     } else {
       name = chalk.dim(chalk.bgRed(name));
     }
-    OUTLINT += `${outline} ${name}`;
+    OUTLINT += `${outline} ${name} `;
+    if (kind.geschwisterkind === true) {
+      OUTLINT += "♥";
+    }
+    if (kind.vorstand === true) {
+      OUTLINT += "★";
+    }
   });
   OUTLINT += "\n|\n";
 
@@ -142,7 +144,7 @@ module.exports = (KINDER, show) => {
     console.log(
       `Legende: ${chalk.bgCyan("Zusagen")} | ${chalk.bgRed(
         "Absagen"
-      )} | # potenzielle Betreuung | . potenziell frühzeitigere Betreuung | * Geschwisterkind`
+      )} | # potenzielle Betreuung | . potenziell frühzeitigere Betreuung | ♥ Geschwisterkind | ★ Elternteil mit Amt`
     );
     console.log();
   }
